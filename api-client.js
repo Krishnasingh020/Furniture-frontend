@@ -4,8 +4,8 @@
  */
 
 // Production Render Backend URL
-const API_BASE_URL = 'https://furniture-backend-l9xe.onrender.com/api';
-// const API_BASE_URL = `${window.location.origin.replace(/\/$/, '')}/api`; // Keep for local fallback if needed
+// const API_BASE_URL = 'https://furniture-backend-l9xe.onrender.com/api';
+const API_BASE_URL = `${window.location.origin.replace(/\/$/, '')}/api`; // Use local backend to avoid CORS
 console.log('[API] Base URL:', API_BASE_URL);
 
 // Test API connection on load
@@ -695,6 +695,152 @@ async function initializeCategoryPage() {
   }
 }
 
+/**
+ * Render Explore Products (Home Page) using Hardcoded Template
+ */
+const exploreProductsStyle = `
+.product .lb-element-woocommerce-product-row-53a2a62b8b {
+    height: 100%;
+    background-color: var(--k-color-7);
+}
+.product .lb-element-woocommerce-product-images-496bcb030c {
+    margin-bottom: 1.5rem;
+}
+.product .lb-element-woocommerce-product-images-496bcb030c .image-set__navigation-button {
+    border-radius: 50%;
+}
+.product .lb-element-woocommerce-product-images-496bcb030c img {
+    aspect-ratio: 8/9;
+}
+.product .lb-element-woocommerce-product-title-6e814bb413 {
+    margin-bottom: 0.25em;
+}
+.product .lb-element-woocommerce-product-swap-on-hover-9084dc5655 {
+    font-size: 0.875em;
+}
+.product .lb-element-woocommerce-product-add-to-cart-7b2c999c7c .add-to-cart {
+    color: var(--k-color-3);
+}
+.product .lb-element-woocommerce-product-add-to-cart-7b2c999c7c .add-to-cart:hover {
+    color: var(--k-color-2);
+}
+.product .lb-element-woocommerce-product-wishlist-ad1269863e {
+    top: 1em;
+    right: 1.25em;
+}
+.product .lb-element-woocommerce-product-wishlist-ad1269863e .add-to-wishlist {
+    color: var(--k-color-3);
+}
+.product .lb-element-woocommerce-product-wishlist-ad1269863e .add-to-wishlist:hover {
+    color: var(--k-color-4);
+}
+`;
+
+const exploreProductTemplate = `
+<div class="lb-element lb-element-woocommerce-product-row lb-element-woocommerce-product-row-53a2a62b8b visible-always visible-md-always visible-xl-always row">
+    <div class="lb-element lb-element-woocommerce-product-column lb-element-woocommerce-product-column-fb57d1a6ea visible-always visible-md-always visible-xl-always col col-auto-grow col-md-auto-grow col-xl-auto-grow">
+        <div class="lb-element lb-element-woocommerce-product-images lb-element-woocommerce-product-images-496bcb030c visible-always visible-md-always visible-xl-always">
+            <div class="image-set image-set--hover-transition-fade">
+                <div class="image-set__entry image-set__entry--hover-invisible">
+                    <a href="{{productLink}}" aria-label="{{productName}}">
+                        <span class="image-placeholder loop-product-image" style="--k-ratio:0.666667">
+                             <img loading="lazy" decoding="async" width="800" height="1200" src="{{imageSrc1}}" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="{{productName}}" />
+                        </span>
+                    </a>
+                </div>
+                <div class="image-set__entry image-set__entry--overlay image-set__entry--hover-visible">
+                    <a href="{{productLink}}" aria-label="{{productName}}">
+                        <span class="image-placeholder loop-product-image" style="--k-ratio:0.666667">
+                            <img loading="lazy" decoding="async" width="800" height="1200" src="{{imageSrc2}}" class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="{{productName}}" />
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="lb-element lb-element-woocommerce-product-row lb-element-woocommerce-product-row-3068b4958c visible-always visible-md-always visible-xl-always row">
+            <div class="lb-element lb-element-woocommerce-product-column lb-element-woocommerce-product-column-a715305e66 visible-always visible-md-always visible-xl-always col col-10 col-md-10 col-xl-10">
+                <h3 class="lb-element lb-element-woocommerce-product-title lb-element-woocommerce-product-title-6e814bb413 visible-always visible-md-always visible-xl-always link-plain">
+                    <a href="{{productLink}}" class="woocommerce-LoopProduct-link woocommerce-loop-product__link">{{productName}}</a>
+                </h3>
+                <div class="lb-element lb-element-woocommerce-product-swap-on-hover lb-element-woocommerce-product-swap-on-hover-9084dc5655 visible-always visible-md-always visible-xl-always swap-on-hover" data-hover-attach="product-hover">
+                    <div class="lb-element lb-element-woocommerce-product-price lb-element-woocommerce-product-price-485f9e8dfb visible-always visible-md-always visible-xl-always">
+                        <span class="price">
+                            <span class="woocommerce-Price-amount amount">
+                                <bdi><span class="woocommerce-Price-currencySymbol">{{currencySymbol}}</span>{{price}}</bdi>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="lb-element lb-element-woocommerce-product-add-to-cart lb-element-woocommerce-product-add-to-cart-7b2c999c7c visible-always visible-md-hover visible-xl-hover visible-hover--animate visible-hover--animate-fast visible-hover--fade">
+                        <a href="{{productLink}}" class="add-to-cart link-button product_type_simple" aria-label="View details for {{productName}}">
+                            <span class="link-button__content link-button__content--icon">
+                                <span class="button-icon"><i class="kalium-icon-plus"></i></span>
+                                <span class="link-button__loading"></span>
+                            </span>
+                            <span class="link-button__content link-button__content--text">View Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+             <div class="lb-element lb-element-woocommerce-product-column lb-element-woocommerce-product-column-71d730a90d d-flex justify-content-end justify-content-md-end justify-content-xl-end visible-always visible-md-always visible-xl-always col col-auto-grow col-md-auto-grow col-xl-auto-grow">
+                 <div class="lb-element lb-element-woocommerce-product-wishlist lb-element-woocommerce-product-wishlist-ad1269863e visible-hover visible-md-hover visible-xl-hover visible-hover--animate visible-hover--animate-fast visible-hover--fade">
+                      <a href="#" class="add-to-wishlist link-button" rel="nofollow" data-tooltip="Add to wishlist" data-tooltip-placement="top">
+                          <span class="link-button__content link-button__content--icon">
+                              <span class="button-icon"><i class="kalium-icon-add-to-wishlist"></i></span>
+                          </span>
+                      </a>
+                 </div>
+             </div>
+        </div>
+    </div>
+</div>
+`;
+
+async function renderExploreProducts() {
+  const grid = document.getElementById('explore-products-grid');
+  if (!grid) return;
+
+  console.log('[Explore] Rendering explore products using hardcoded template...');
+
+  // Inject Styles if not present
+  if (!document.getElementById('explore-products-styles')) {
+    const styleEl = document.createElement('style');
+    styleEl.id = 'explore-products-styles';
+    styleEl.textContent = exploreProductsStyle;
+    document.head.appendChild(styleEl);
+  }
+
+  try {
+    const products = await fetchProducts();
+    const exploreProducts = products.slice(0, 12);
+
+    grid.innerHTML = '';
+
+    exploreProducts.forEach(product => {
+      const productLink = `/product/${product.slug}`;
+      const firstImage = product.images?.[0];
+      const secondImage = product.images?.[1] || firstImage;
+      const currencySymbol = product.currencySymbol || '$';
+
+      let html = exploreProductTemplate
+        .replaceAll('{{productLink}}', productLink)
+        .replaceAll('{{productName}}', product.name)
+        .replace('{{imageSrc1}}', firstImage?.src || '')
+        .replace('{{imageSrc2}}', secondImage?.src || '')
+        .replace('{{currencySymbol}}', currencySymbol)
+        .replace('{{price}}', product.price);
+
+      const li = document.createElement('li');
+      li.className = 'product type-product status-publish instock has-post-thumbnail featured shipping-taxable purchasable product-type-simple';
+      li.innerHTML = html;
+
+      grid.appendChild(li);
+    });
+
+  } catch (error) {
+    console.error('[Explore] Error rendering explore products:', error);
+  }
+}
+
 // Auto-initialize when DOM is ready
 function runInitialization() {
   console.log('[Init] Running initialization, DOM state:', document.readyState);
@@ -718,6 +864,7 @@ function runInitialization() {
     console.log('[Init] After timeout - Page filename:', getPageFilename());
     initializeProductPage();
     initializeCategoryPage();
+    renderExploreProducts();
   }, 100);
 }
 
